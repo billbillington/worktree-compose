@@ -1,3 +1,4 @@
+import path from "node:path";
 import { getRepoRoot, getRepoName } from "../compose/detect.js";
 import { getNonMainWorktrees } from "../git/worktree.js";
 import { composeProjectName } from "../utils/sanitize.js";
@@ -14,7 +15,7 @@ export function cleanCommand(): void {
   for (let i = 0; i < worktrees.length; i++) {
     const wt = worktrees[i];
     const idx = i + 1;
-    const project = composeProjectName(repoName, idx, wt.branch);
+    const project = composeProjectName(repoName, idx, path.basename(wt.path));
 
     log.info(`Stopping containers for ${project}...`);
     try {

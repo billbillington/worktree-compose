@@ -10,7 +10,7 @@ export function sanitize(input: string): string {
 export function composeProjectName(
   repoName: string,
   index: number,
-  branch: string,
+  wtDir: string,
 ): string {
-  return sanitize(`${repoName}-wt-${index}-${branch}`);
+  return sanitize(`${repoName}-wt-${index}-${wtDir}`);
 }

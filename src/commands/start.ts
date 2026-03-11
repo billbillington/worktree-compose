@@ -1,3 +1,4 @@
+import path from "node:path";
 import { buildContext, filterWorktrees } from "../context.js";
 import { allocateWorktreePorts } from "../ports/allocate.js";
 import { composeProjectName } from "../utils/sanitize.js";
@@ -21,7 +22,7 @@ export function startCommand(indices: number[]): void {
 
   for (const wt of targets) {
     const idx = ctx.worktrees.indexOf(wt) + 1;
-    const project = composeProjectName(ctx.repoName, idx, wt.branch);
+    const project = composeProjectName(ctx.repoName, idx, path.basename(wt.path));
     const allocations = allocateWorktreePorts(ctx.portMappings, idx);
 
     log.header(`Worktree ${idx}: ${wt.branch}`);
