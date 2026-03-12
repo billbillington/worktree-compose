@@ -12,3 +12,4 @@ export interface WtcContext {
 }
 export declare function buildContext(): WtcContext;
 export declare function filterWorktrees(worktrees: WorktreeInfo[], indices: number[]): WorktreeInfo[];
+export declare function getCurrentWorktree(ctx: WtcContext): WorktreeInfo;

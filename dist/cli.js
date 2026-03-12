@@ -15,24 +15,21 @@ program
     .version("0.1.0");
 program
     .command("start")
-    .description("Start Docker Compose stacks for worktrees")
-    .argument("[indices...]", "Worktree indices to start (omit for all)")
-    .action((indices) => {
-    wrap(() => startCommand(indices.map(Number)));
+    .description("Start Docker Compose stack for the current worktree")
+    .action(() => {
+    wrap(() => startCommand());
 });
 program
     .command("stop")
-    .description("Stop Docker Compose stacks for worktrees")
-    .argument("[indices...]", "Worktree indices to stop (omit for all)")
-    .action((indices) => {
-    wrap(() => stopCommand(indices.map(Number)));
+    .description("Stop Docker Compose stack for the current worktree")
+    .action(() => {
+    wrap(() => stopCommand());
 });
 program
     .command("restart")
-    .description("Restart Docker Compose stacks for worktrees")
-    .argument("[indices...]", "Worktree indices to restart (omit for all)")
-    .action((indices) => {
-    wrap(() => restartCommand(indices.map(Number)));
+    .description("Restart Docker Compose stack for the current worktree")
+    .action(() => {
+    wrap(() => restartCommand());
 });
 program
     .command("list")

@@ -48,3 +48,13 @@ export function filterWorktrees(
       return wt;
     });
 }
+
+export function getCurrentWorktree(ctx: WtcContext): WorktreeInfo {
+  const wt = ctx.worktrees.find((w) => w.path === ctx.repoRoot);
+  if (!wt) {
+    throw new Error(
+      `Current directory is not inside a worktree. Run this command from within a worktree, or use 'wtc list' to see available worktrees.`,
+    );
+  }
+  return wt;
+}

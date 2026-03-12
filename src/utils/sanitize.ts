@@ -7,10 +7,6 @@ export function sanitize(input: string): string {
     .replace(/-$/, "");
 }
 
-export function composeProjectName(
-  repoName: string,
-  index: number,
-  wtDir: string,
-): string {
-  return sanitize(`${repoName}-wt-${index}-${wtDir}`);
+export function composeProjectName(repoName: string, wtDir: string): string {
+  return sanitize(`${repoName}-wtc-${wtDir}`);
 }

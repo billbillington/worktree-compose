@@ -14,8 +14,7 @@ export function cleanCommand(): void {
 
   for (let i = 0; i < worktrees.length; i++) {
     const wt = worktrees[i];
-    const idx = i + 1;
-    const project = composeProjectName(repoName, idx, path.basename(wt.path));
+    const project = composeProjectName(repoName, path.basename(wt.path));
 
     log.info(`Stopping containers for ${project}...`);
     try {
@@ -40,7 +39,7 @@ export function cleanCommand(): void {
   execSafe(`git -C "${repoRoot}" worktree prune`);
 
   const staleContainers = execSafe(
-    `docker ps -aq --filter "label=com.docker.compose.project" --filter "name=-wt-"`,
+    `docker ps -aq --filter "label=com.docker.compose.project" --filter "name=-wtc-"`,
   );
   if (staleContainers) {
     log.info("Removing stale worktree containers...");
@@ -48,14 +47,14 @@ export function cleanCommand(): void {
   }
 
   const staleNetworks = execSafe(
-    `docker network ls -q --filter "name=${repoName}-wt-"`,
+    `docker network ls -q --filter "name=${repoName}-wtc-"`,
   );
   if (staleNetworks) {
     execSafe(`docker network rm ${staleNetworks}`);
   }
 
   const staleVolumes = execSafe(
-    `docker volume ls -q --filter "name=${repoName}-wt-"`,
+    `docker volume ls -q --filter "name=${repoName}-wtc-"`,
   );
   if (staleVolumes) {
     execSafe(`docker volume rm ${staleVolumes}`);

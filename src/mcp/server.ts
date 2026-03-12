@@ -1,3 +1,4 @@
+import path from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -25,7 +26,7 @@ function startWorktrees(indices: number[]): string {
 
   for (const wt of targets) {
     const idx = ctx.worktrees.indexOf(wt) + 1;
-    const project = composeProjectName(ctx.repoName, idx, wt.branch);
+    const project = composeProjectName(ctx.repoName, path.basename(wt.path));
     const allocations = allocateWorktreePorts(ctx.portMappings, idx);
 
     syncWorktreeFiles(ctx.repoRoot, wt.path, ctx.composeFile, ctx.config.sync);
@@ -54,7 +55,7 @@ function stopWorktrees(indices: number[]): string {
 
   for (const wt of targets) {
     const idx = ctx.worktrees.indexOf(wt) + 1;
-    const project = composeProjectName(ctx.repoName, idx, wt.branch);
+    const project = composeProjectName(ctx.repoName, path.basename(wt.path));
 
     try {
       exec(`docker compose -p "${project}" down`, { cwd: wt.path });
@@ -71,7 +72,7 @@ function listWorktrees(): object {
   const ctx = buildContext();
   return ctx.worktrees.map((wt, i) => {
     const idx = i + 1;
-    const project = composeProjectName(ctx.repoName, idx, wt.branch);
+    const project = composeProjectName(ctx.repoName, path.basename(wt.path));
     const allocations = allocateWorktreePorts(ctx.portMappings, idx);
     const up =
       execSafe(`docker compose -p "${project}" ps --format json`, {

@@ -1,1 +1,1 @@
-export declare function stopCommand(indices: number[]): void;
+export declare function stopCommand(): void;

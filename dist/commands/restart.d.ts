@@ -1,1 +1,1 @@
-export declare function restartCommand(indices: number[]): void;
+export declare function restartCommand(): void;

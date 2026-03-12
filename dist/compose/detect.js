@@ -13,7 +13,14 @@ export function getRepoRoot(cwd) {
     });
 }
 export function getRepoName(repoRoot) {
-    return path.basename(repoRoot);
+    const commonDir = exec(`git -C "${repoRoot}" rev-parse --git-common-dir`);
+    const absCommonDir = path.isAbsolute(commonDir)
+        ? commonDir
+        : path.resolve(repoRoot, commonDir);
+    const baseName = absCommonDir.endsWith("/.git")
+        ? path.basename(path.dirname(absCommonDir))
+        : path.basename(absCommonDir);
+    return baseName.replace(/\.git$/, "");
 }
 export function detectComposeFile(repoRoot) {
     for (const name of COMPOSE_FILENAMES) {

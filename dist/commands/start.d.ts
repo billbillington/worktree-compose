@@ -1,1 +1,1 @@
-export declare function startCommand(indices: number[]): void;
+export declare function startCommand(): void;

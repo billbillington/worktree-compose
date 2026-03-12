@@ -16,7 +16,14 @@ export function getRepoRoot(cwd?: string): string {
 }
 
 export function getRepoName(repoRoot: string): string {
-  return path.basename(repoRoot);
+  const commonDir = exec(`git -C "${repoRoot}" rev-parse --git-common-dir`);
+  const absCommonDir = path.isAbsolute(commonDir)
+    ? commonDir
+    : path.resolve(repoRoot, commonDir);
+  const baseName = absCommonDir.endsWith("/.git")
+    ? path.basename(path.dirname(absCommonDir))
+    : path.basename(absCommonDir);
+  return baseName.replace(/\.git$/, "");
 }
 
 export function detectComposeFile(repoRoot: string): string | null {

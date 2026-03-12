@@ -11,8 +11,7 @@ export function cleanCommand() {
     const currentWt = execSafe("git rev-parse --show-toplevel") ?? repoRoot;
     for (let i = 0; i < worktrees.length; i++) {
         const wt = worktrees[i];
-        const idx = i + 1;
-        const project = composeProjectName(repoName, idx, path.basename(wt.path));
+        const project = composeProjectName(repoName, path.basename(wt.path));
         log.info(`Stopping containers for ${project}...`);
         try {
             exec(`docker compose -p "${project}" down`, { cwd: wt.path });
@@ -33,16 +32,16 @@ export function cleanCommand() {
         }
     }
     execSafe(`git -C "${repoRoot}" worktree prune`);
-    const staleContainers = execSafe(`docker ps -aq --filter "label=com.docker.compose.project" --filter "name=-wt-"`);
+    const staleContainers = execSafe(`docker ps -aq --filter "label=com.docker.compose.project" --filter "name=-wtc-"`);
     if (staleContainers) {
         log.info("Removing stale worktree containers...");
         execSafe(`docker rm -f ${staleContainers}`);
     }
-    const staleNetworks = execSafe(`docker network ls -q --filter "name=${repoName}-wt-"`);
+    const staleNetworks = execSafe(`docker network ls -q --filter "name=${repoName}-wtc-"`);
     if (staleNetworks) {
         execSafe(`docker network rm ${staleNetworks}`);
     }
-    const staleVolumes = execSafe(`docker volume ls -q --filter "name=${repoName}-wt-"`);
+    const staleVolumes = execSafe(`docker volume ls -q --filter "name=${repoName}-wtc-"`);
     if (staleVolumes) {
         execSafe(`docker volume rm ${staleVolumes}`);
     }
