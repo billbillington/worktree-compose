@@ -124,7 +124,7 @@ Each worktree N gets unique ports: `20000 + default_port + worktree_index`
 
 ### Container Isolation
 
-Each worktree gets its own `COMPOSE_PROJECT_NAME`: `{repo}-wt-{index}-{branch}`. This means separate containers, networks, and volumes. Nothing is shared.
+Each worktree gets its own `COMPOSE_PROJECT_NAME`: `{root}-wtc-{worktree}`. This means separate containers, networks, and volumes. Nothing is shared.
 
 ### File Sync
 
@@ -147,31 +147,28 @@ FRONTEND_PORT=25174
 
 ## Commands
 
-### `wtc start [indices...]`
+### `wtc start`
 
 Start Docker Compose stacks. Syncs files, injects ports, runs `docker compose up -d --build`.
 
 ```bash
-npx wtc start         # all worktrees
-npx wtc start 1       # worktree 1 only
-npx wtc start 1 2 3   # worktrees 1, 2, and 3
+npx wtc start   # start stack for current worktree directory
 ```
 
-### `wtc stop [indices...]`
+### `wtc stop`
 
 Stop stacks. Runs `docker compose down`. Volumes are preserved.
 
 ```bash
-npx wtc stop          # all
-npx wtc stop 1        # worktree 1 only
+npx wtc stop          # stop stack for current worktree directory
 ```
 
-### `wtc restart [indices...]`
+### `wtc restart`
 
 Full restart: stop, re-sync files, re-inject env, rebuild, start. Use after migrations, Dockerfile changes, or config updates.
 
 ```bash
-npx wtc restart 1
+npx wtc restart # restart stack for current worktree directory
 ```
 
 ### `wtc list` / `wtc ls`
@@ -182,12 +179,12 @@ Show all worktrees with branch, status, URL, and ports.
 npx wtc list
 ```
 
-### `wtc promote <index>`
+### `wtc promote branch name`
 
 Copy changed files from a worktree into your current branch as uncommitted changes. Automatically excludes `.env` and compose files. Aborts if it would overwrite uncommitted local changes.
 
 ```bash
-npx wtc promote 1
+npx wtc promote branch name
 ```
 
 ### `wtc clean`
@@ -257,11 +254,11 @@ Built-in [MCP](https://modelcontextprotocol.io/) server so AI agents can manage 
 
 | Tool | Parameters | Description |
 |------|-----------|-------------|
-| `wtc_start` | `indices?: number[]` | Start worktree stacks |
-| `wtc_stop` | `indices?: number[]` | Stop worktree stacks |
-| `wtc_restart` | `indices?: number[]` | Restart after migrations/config changes |
+| `wtc_start` | none | Start worktree stacks |
+| `wtc_stop` | none | Stop worktree stacks |
+| `wtc_restart` | none | Restart after migrations/config changes |
 | `wtc_list` | none | List worktrees (returns JSON) |
-| `wtc_promote` | `index: number` | Pull worktree changes into current branch |
+| `wtc_promote` | `branch: string, name: string` | Pull worktree changes into current branch |
 | `wtc_clean` | none | Tear down everything |
 
 ## Full Example
