@@ -1,6 +1,6 @@
 import { getRepoRoot } from "../compose/detect.js";
 import {
-  getWorktreeByIndex,
+  getWorktreeByBranch,
   getWorktreeBranch,
 } from "../git/worktree.js";
 import {
@@ -11,13 +11,13 @@ import {
 } from "../git/promote.js";
 import * as log from "../utils/log.js";
 
-export function promoteCommand(index: number): void {
+export function promoteCommand(branch: string, name: string): void {
   const repoRoot = getRepoRoot();
-  const wt = getWorktreeByIndex(repoRoot, index);
+  const wt = getWorktreeByBranch(repoRoot, branch);
 
   if (!wt) {
     log.error(
-      `Worktree index ${index} not found. Run 'wtc list' to see available worktrees.`,
+      `No worktree found for branch "${branch}". Run 'wtc list' to see available worktrees.`,
     );
     process.exit(1);
   }
@@ -25,7 +25,7 @@ export function promoteCommand(index: number): void {
   const currentBranch = getWorktreeBranch(repoRoot);
   const displayCurrent = currentBranch === "HEAD" ? "detached HEAD" : currentBranch;
 
-  log.info(`Promoting worktree ${index} (${wt.branch}) into ${displayCurrent}`);
+  log.info(`Promoting worktree "${name}" (${wt.branch}) into ${displayCurrent}`);
 
   const files = getChangedFiles(repoRoot, wt.path, currentBranch, wt.branch);
 

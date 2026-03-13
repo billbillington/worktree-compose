@@ -49,7 +49,7 @@ npx wtc stop 1
 npx wtc restart 1
 
 # Pull a worktree's changes into your current branch
-npx wtc promote 1
+npx wtc promote branch name
 
 # Tear down everything (containers, worktrees, volumes)
 npx wtc clean

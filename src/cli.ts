@@ -48,9 +48,10 @@ program
 program
   .command("promote")
   .description("Copy changed files from a worktree into the current branch")
-  .argument("<index>", "Worktree index to promote")
-  .action((index: string) => {
-    wrap(() => promoteCommand(Number(index)));
+  .argument("<branch>", "Branch name of the worktree to promote")
+  .argument("<name>", "Worktree name to promote")
+  .action((branch: string, name: string) => {
+    wrap(() => promoteCommand(branch, name));
   });
 
 program

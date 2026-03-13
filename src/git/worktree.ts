@@ -50,6 +50,14 @@ export function getWorktreeByIndex(
   return nonMain[index - 1] ?? null;
 }
 
+export function getWorktreeByBranch(
+  repoRoot: string,
+  branch: string,
+): WorktreeInfo | null {
+  const nonMain = getNonMainWorktrees(repoRoot);
+  return nonMain.find((wt) => wt.branch === branch) ?? null;
+}
+
 export function getWorktreeBranch(wtPath: string): string {
   return (
     execSafe(`git -C "${wtPath}" rev-parse --abbrev-ref HEAD`) ?? "detached"

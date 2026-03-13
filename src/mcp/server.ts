@@ -9,7 +9,7 @@ import { exec, execSafe } from "../utils/exec.js";
 import { syncWorktreeFiles } from "../sync/files.js";
 import { copyBaseEnv, injectPortOverrides } from "../sync/env.js";
 import { getRepoRoot } from "../compose/detect.js";
-import { getWorktreeByIndex, getWorktreeBranch } from "../git/worktree.js";
+import { getWorktreeByBranch, getWorktreeBranch } from "../git/worktree.js";
 import {
   getChangedFiles,
   getLocalDirtyFiles,
@@ -90,10 +90,10 @@ function listWorktrees(): object {
   });
 }
 
-function promoteWorktree(index: number): string {
+function promoteWorktree(branch: string, name: string): string {
   const repoRoot = getRepoRoot();
-  const wt = getWorktreeByIndex(repoRoot, index);
-  if (!wt) return `Worktree index ${index} not found.`;
+  const wt = getWorktreeByBranch(repoRoot, branch);
+  if (!wt) return `No worktree found for branch "${branch}".`;
 
   const currentBranch = getWorktreeBranch(repoRoot);
   const files = getChangedFiles(repoRoot, wt.path, currentBranch, wt.branch);
@@ -108,7 +108,7 @@ function promoteWorktree(index: number): string {
   }
 
   promoteFiles(repoRoot, wt.path, files);
-  return `Promoted ${files.length} file(s) from worktree ${index} (${wt.branch}) into ${currentBranch}:\n${files.join("\n")}`;
+  return `Promoted ${files.length} file(s) from worktree "${name}" (${wt.branch}) into ${currentBranch}:\n${files.join("\n")}`;
 }
 
 export async function startMcpServer(): Promise<void> {
@@ -160,9 +160,12 @@ export async function startMcpServer(): Promise<void> {
   server.tool(
     "wtc_promote",
     "Copy changed files from a worktree into the current branch as uncommitted changes.",
-    { index: z.number().describe("Worktree index to promote.") },
-    async ({ index }) => ({
-      content: [{ type: "text", text: promoteWorktree(index) }],
+    {
+      branch: z.string().describe("Branch name of the worktree to promote."),
+      name: z.string().describe("Worktree name to promote."),
+    },
+    async ({ branch, name }) => ({
+      content: [{ type: "text", text: promoteWorktree(branch, name) }],
     }),
   );
 
